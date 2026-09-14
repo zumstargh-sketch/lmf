@@ -33,6 +33,11 @@ export class UsersService {
     return this.prisma.role.upsert({ where: { name }, update: {}, create: { name } });
   }
 
+  async updatePassword(id: string, newPassword: string) {
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({ where: { id }, data: { password: hashed } });
+  }
+
   async validatePassword(email: string, password: string) {
     const user = await this.findByEmail(email);
     if (!user || !user.password) return null;

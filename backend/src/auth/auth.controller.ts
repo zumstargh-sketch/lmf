@@ -29,6 +29,14 @@ export class LoginDto {
   password: string;
 }
 
+export class ChangePasswordDto {
+  @IsString()
+  currentPassword: string;
+
+  @MinLength(6, { message: 'New password must be at least 6 characters long.' })
+  newPassword: string;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService, private usersService: UsersService) {}
@@ -61,6 +69,23 @@ export class AuthController {
       throw new UnauthorizedException('Invalid email or password.');
     }
     return this.authService.login(valid);
+  }
+
+  /** Signed-in users may change their own password. */
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
+    const payload = (req as Request & { user: any }).user;
+    const user = await this.usersService.findById(payload?.sub);
+    if (!user) {
+      throw new UnauthorizedException('Account not found.');
+    }
+    const ok = await this.usersService.validatePassword(user.email, dto.currentPassword);
+    if (!ok) {
+      throw new UnauthorizedException('Current password is incorrect.');
+    }
+    await this.usersService.updatePassword(user.id, dto.newPassword);
+    return { changed: true };
   }
 
   /** Profile of the signed-in donor; used by the app to restore saved sessions. */
