@@ -11,7 +11,7 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        sync: false          # you will paste the Neon/Supabase connection string
+        sync: false          # you will paste the Render Postgres connection string
       - key: JWT_SECRET
         generateValue: true  # Render generates a strong secret automatically
       - key: PORT
