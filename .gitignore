@@ -1,0 +1,24 @@
+# Node
+node_modules/
+dist/
+build/
+
+# Android/Flutter
+.dart_tool/
+/.gradle/
+/build/
+**/android/**/local.properties
+
+# Flutter pub cache
+/.pub-cache/
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Secrets
+.env
+.env.local
+/*.secret

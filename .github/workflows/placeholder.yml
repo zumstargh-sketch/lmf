@@ -1,0 +1,9 @@
+name: Placeholder CI
+
+on: [push]
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This workflow is a placeholder. Full CI workflows will be added in subsequent steps."

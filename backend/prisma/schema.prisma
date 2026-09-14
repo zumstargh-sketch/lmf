@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  phone       String?  
+  name        String?
+  password    String?  
+  googleId    String?  @unique
+  role        Role?    @relation(fields: [roleId], references: [id])
+  roleId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // relations
+  projects    Project[] @relation("owner_projects")
+  donations   Donation[]
+}
+
+model Role {
+  id    String @id @default(uuid())
+  name  String @unique
+  users User[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  region      String
+  district    String?
+  community   String?
+  description String?
+  latitude    Float?
+  longitude   Float?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      String
+  beneficiaries Int?
+  createdAt   DateTime @default(now())
+
+  ownerId     String?
+  owner       User?    @relation("owner_projects", fields: [ownerId], references: [id])
+
+  media       ProjectMedia[]
+  donations   Donation[]
+}
+
+model ProjectMedia {
+  id        String   @id @default(uuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  type      String   // image|video|document
+  url       String
+  caption   String?
+}
+
+model Programme {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  category    String?
+  createdAt   DateTime @default(now())
+}
+
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  content   String?
+  featured  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  media     NewsMedia[]
+}
+
+model NewsMedia {
+  id      String @id @default(uuid())
+  news    News   @relation(fields: [newsId], references: [id])
+  newsId  String
+  type    String
+  url     String
+}
+
+model GalleryAlbum {
+  id        String @id @default(uuid())
+  title     String
+  category  String?
+  createdAt DateTime @default(now())
+  items     GalleryItem[]
+}
+
+model GalleryItem {
+  id       String @id @default(uuid())
+  album    GalleryAlbum @relation(fields: [albumId], references: [id])
+  albumId  String
+  type     String
+  url      String
+  caption  String?
+}
+
+model Event {
+  id        String @id @default(uuid())
+  title     String
+  description String?
+  date      DateTime
+  time      String?
+  venue     String?
+  latitude  Float?
+  longitude Float?
+  organizer String?
+  category  String?
+  createdAt DateTime @default(now())
+}
+
+model Scholarship {
+  id          String @id @default(uuid())
+  title       String
+  description String?
+  eligibility String?
+  deadline    DateTime?
+  createdAt   DateTime @default(now())
+  applications ScholarshipApplication[]
+}
+
+model ScholarshipApplication {
+  id            String @id @default(uuid())
+  scholarship   Scholarship @relation(fields: [scholarshipId], references: [id])
+  scholarshipId String
+  applicantName String
+  email         String
+  phone         String?
+  status        String
+  submittedAt   DateTime @default(now())
+}
+
+model AssistanceCase {
+  id          String @id @default(uuid())
+  reference   String @unique
+  fullName    String
+  phone       String
+  email       String?
+  region      String?
+  district    String?
+  category    String
+  description String?
+  status      String
+  emergency   Boolean @default(false)
+  createdAt   DateTime @default(now())
+  documents   AssistanceDocument[]
+}
+
+model AssistanceDocument {
+  id        String @id @default(uuid())
+  caseRef   AssistanceCase @relation(fields: [caseId], references: [id])
+  caseId    String
+  url       String
+  note      String?
+}
+
+model WomenProgramme {
+  id          String @id @default(uuid())
+  title       String
+  category    String?
+  description String?
+  createdAt   DateTime @default(now())
+  applications WomenApplication[]
+}
+
+model WomenApplication {
+  id        String @id @default(uuid())
+  programme WomenProgramme @relation(fields: [programmeId], references: [id])
+  programmeId String
+  name      String
+  phone     String
+  email     String?
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Volunteer {
+  id        String @id @default(uuid())
+  name      String
+  phone     String
+  email     String?
+  profession String?
+  skills    String?
+  availability String?
+  areas     String?
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Donation {
+  id        String @id @default(uuid())
+  donorId   String?
+  donor     User?   @relation(fields: [donorId], references: [id])
+  donorName String?
+  email     String?
+  phone     String?
+  amount    Float
+  currency  String @default("GHS")
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+  status    String
+  reference String @unique
+  createdAt DateTime @default(now())
+}
+
+model ImpactStatistic {
+  id        String @id @default(uuid())
+  key       String
+  value     Int
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String @id @default(uuid())
+  title     String
+  body      String
+  category  String?
+  read      Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AIKnowledge {
+  id        String @id @default(uuid())
+  title     String
+  language  String @default("en")
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
