@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const fallbackMetrics = [
   { label: 'Active projects', value: '12', detail: '+2 this month', tone: '#176B5B' },
@@ -69,6 +70,7 @@ export default function Home() {
             <Box><Typography variant="subtitle1" sx={{ lineHeight: 1 }}>Lordina</Typography><Typography variant="caption" color="text.secondary">FOUNDATION / ADMIN</Typography></Box>
           </Stack>
           <Chip label={statusLabel} color={statusColor} size="small" variant="outlined" sx={{ display: { xs: 'none', sm: 'flex' } }} />
+          <Button sx={{ color: 'text.primary' }} component={Link} href="/ai">AI answers</Button>
           <Tooltip title="Notifications"><IconButton aria-label="Notifications" sx={{ color: 'text.primary' }} onClick={() => setMessage('You have 7 assistance cases waiting for review.')}>◌</IconButton></Tooltip>
           <Button sx={{ ml: 1, color: 'text.primary' }} onClick={() => setMessage('Profile management will be available after authentication is enabled.')}>Admin profile</Button>
         </Toolbar>
