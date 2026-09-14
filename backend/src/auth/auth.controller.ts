@@ -1,19 +1,31 @@
 import { BadRequestException, Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
-class RegisterDto {
-  email: string;
-  password: string;
+export class RegisterDto {
+  @IsString()
   name?: string;
+
+  @IsString()
+  @IsOptional()
   phone?: string;
+
+  @IsEmail({}, { message: 'Please provide a valid email address.' })
+  email: string;
+
+  @MinLength(6, { message: 'Password must be at least 6 characters long.' })
+  password: string;
 }
 
-class LoginDto {
+export class LoginDto {
+  @IsEmail({}, { message: 'Please provide a valid email address.' })
   email: string;
+
+  @IsString()
   password: string;
 }
 
