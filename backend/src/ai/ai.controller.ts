@@ -1,9 +1,21 @@
-import { Controller, Get, Query, Post, Body } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { AIService } from './ai.service';
 
 @Controller('ai')
 export class AIController {
   constructor(private svc: AIService) {}
+
+  /** Floating assistant: ask anything about the foundation. */
+  @Post('ask')
+  async ask(@Body('question') question: string) {
+    return this.svc.ask(question || '');
+  }
+
+  /** Example questions shown as quick taps in the assistant. */
+  @Get('suggestions')
+  async suggestions() {
+    return this.svc.suggestions();
+  }
 
   @Get('search')
   async search(@Query('q') q: string, @Query('lang') lang: string) {

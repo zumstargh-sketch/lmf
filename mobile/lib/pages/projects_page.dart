@@ -24,7 +24,7 @@ class ProjectsPage extends StatelessWidget {
               return const Center(child: Text('Projects will appear here soon.'));
             }
             return ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
               itemCount: projects.length,
               itemBuilder: (context, index) {
                 final project = projects[index] as Map<String, dynamic>;

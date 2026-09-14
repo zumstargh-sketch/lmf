@@ -95,7 +95,7 @@ class _AccountPageState extends ConsumerState<AccountPage> {
   Widget _authForm() {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 96),
       children: [
         Text('Donor account', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
@@ -169,7 +169,7 @@ class _AccountPageState extends ConsumerState<AccountPage> {
     final theme = Theme.of(context);
     final user = session.user!;
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 96),
       children: [
         Card(
           child: Padding(

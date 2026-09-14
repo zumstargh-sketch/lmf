@@ -14,6 +14,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { WhatsappModule } from './whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     PaymentsModule,
     NotificationsModule,
     UploadsModule,
-    DashboardModule
+    DashboardModule,
+    WhatsappModule
   ],
   providers: [PrismaService],
   controllers: [HealthController]

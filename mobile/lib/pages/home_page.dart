@@ -21,7 +21,7 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 96),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Together, communities thrive.',

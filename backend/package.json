@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.build.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "seed:ai": "ts-node prisma/seed-ai.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

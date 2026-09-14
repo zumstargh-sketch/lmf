@@ -68,7 +68,7 @@ class _AssistancePageState extends State<AssistancePage> {
         title: 'Request Assistance',
         selected: 2,
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 96),
           children: [
             const Text('We are here to listen. Share a few details and our team will review your request.'),
             const SizedBox(height: 20),

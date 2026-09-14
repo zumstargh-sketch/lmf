@@ -153,6 +153,58 @@ class ApiClient {
     final data = _decode(response);
     return data is Map<String, dynamic> ? data : <String, dynamic>{};
   }
+
+  /// Floating AI assistant: ask a question about the foundation.
+  Future<AssistantReply> askAssistant(String question) async {
+    final response = await http
+        .post(_uri('ai/ask'), headers: _headers, body: jsonEncode({'question': question}))
+        .timeout(const Duration(seconds: 30));
+    final data = _decode(response);
+    if (data is Map<String, dynamic>) return AssistantReply.fromJson(data);
+    throw const ApiError('The assistant is unavailable right now.');
+  }
+
+  /// Example questions shown as quick taps in the assistant.
+  Future<List<String>> assistantSuggestions() async {
+    final response = await http.get(_uri('ai/suggestions'), headers: _headers).timeout(const Duration(seconds: 15));
+    final data = _decode(response);
+    return data is List ? data.map((s) => s.toString()).toList() : <String>[];
+  }
+
+  /// WhatsApp contact configuration (server-managed, no app update needed to change it).
+  Future<WhatsappConfig> whatsappConfig() async {
+    final response = await http.get(_uri('whatsapp/config')).timeout(const Duration(seconds: 15));
+    final data = _decode(response);
+    return data is Map<String, dynamic> ? WhatsappConfig.fromJson(data) : const WhatsappConfig(enabled: false);
+  }
+}
+
+class AssistantReply {
+  final String answer;
+  final String? source;
+  final List<String> suggestions;
+
+  const AssistantReply({required this.answer, this.source, required this.suggestions});
+
+  factory AssistantReply.fromJson(Map<String, dynamic> json) => AssistantReply(
+        answer: (json['answer'] ?? '').toString(),
+        source: json['source']?.toString(),
+        suggestions: (json['suggestions'] as List? ?? []).map((s) => s.toString()).toList(),
+      );
+}
+
+class WhatsappConfig {
+  final bool enabled;
+  final String? number;
+  final String? chatLink;
+
+  const WhatsappConfig({required this.enabled, this.number, this.chatLink});
+
+  factory WhatsappConfig.fromJson(Map<String, dynamic> json) => WhatsappConfig(
+        enabled: json['enabled'] == true,
+        number: json['number']?.toString(),
+        chatLink: json['chatLink']?.toString(),
+      );
 }
 
 class SessionState {

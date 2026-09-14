@@ -102,7 +102,7 @@ class _AccountGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 96),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             CircleAvatar(
               radius: 32,
@@ -159,7 +159,7 @@ class _DonationForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 96),
       children: [
         Text(
           'Your generosity helps turn plans into progress.',

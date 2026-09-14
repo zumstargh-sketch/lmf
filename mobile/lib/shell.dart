@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'api.dart';
+import 'pages/assistant_sheet.dart';
 
 /// Shared page chrome: AppBar with the foundation's official logo and the
 /// bottom navigation bar used by every page.
@@ -11,6 +15,21 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({required this.title, required this.selected, required this.child, super.key});
 
   static const List<String> _routes = ['/', '/projects', '/assistance', '/donate', '/account'];
+
+  static Future<WhatsappConfig>? _whatsappFuture;
+  static bool _whatsappFailed = false;
+
+  /// Loads the WhatsApp configuration once per app run (server-managed).
+  static Future<WhatsappConfig> _loadWhatsappConfig() {
+    if (_whatsappFuture == null || _whatsappFailed) {
+      _whatsappFailed = false;
+      _whatsappFuture = ApiClient().whatsappConfig().catchError((Object _) {
+        _whatsappFailed = true;
+        return const WhatsappConfig(enabled: false);
+      });
+    }
+    return _whatsappFuture!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +50,41 @@ class AppScaffold extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          FutureBuilder<WhatsappConfig>(
+            future: _loadWhatsappConfig(),
+            builder: (context, snapshot) {
+              final config = snapshot.data;
+              final link = config?.chatLink;
+              if (config == null || !config.enabled || link == null) {
+                return const SizedBox.shrink();
+              }
+              return IconButton(
+                tooltip: 'Chat on WhatsApp',
+                icon: const Icon(Icons.chat_outlined),
+                color: const Color(0xFF25D366),
+                onPressed: () async {
+                  try {
+                    await launchUrl(Uri.parse(link), mode: LaunchMode.externalApplication);
+                  } catch (_) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Could not open WhatsApp on this device.')),
+                      );
+                    }
+                  }
+                },
+              );
+            },
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        tooltip: 'AI Assistant',
+        onPressed: () => showAssistantSheet(context),
+        icon: const Icon(Icons.smart_toy_outlined),
+        label: const Text('Ask AI'),
       ),
       body: child,
       bottomNavigationBar: NavigationBar(
